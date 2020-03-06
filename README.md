@@ -1,2 +1,2 @@
-# AlgoTradingComp
-Stevens-Capco algorithmic trading competition
+# TwoAndTwentyLLP
+Stevens-Capco algorithmic trading competition repository
