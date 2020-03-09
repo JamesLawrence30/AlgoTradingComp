@@ -1,6 +1,5 @@
 import sys
 import time
-import timeit
 import credentials
 
 import shift
@@ -13,7 +12,7 @@ def demo_01(trader: shift.Trader):
     :return:
     """
 
-    limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, "AAPL", 1, 168.00)
+    limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, "AAPL", 1, 700.00)
     trader.submit_order(limit_buy)
 
     return
@@ -211,10 +210,10 @@ def demo_08(trader: shift.Trader):
 
     aapl_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, "AAPL", 1)
     trader.submit_order(aapl_market_sell)
-    """
+
     xom_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, "XOM", 1)
     trader.submit_order(xom_market_sell)
-	"""
+
     return
 
 
@@ -265,65 +264,37 @@ def demo_10(trader: shift.Trader):
         )
 
 
-def findDelay(trader: shift.Trader):
-	initial = trader.get_portfolio_summary().get_total_shares()
-	print(initial)
-
-	final = initial
-
-	demo_01(trader)
-	while final == initial:
-		final = trader.get_portfolio_summary().get_total_shares()
-		print(final)
-	
-	return
-
 def main(argv):
-	# create trader object
-	trader = shift.Trader(credentials.user)
+    # create trader object
+    trader = shift.Trader(credentials.user)
 
-	# connect and subscribe to all available order books
-	try:
-	    trader.connect("initiator.cfg", credentials.password)
-	    trader.sub_all_order_book() #subscribe to orderbook for all tickers.  cna also choose one particular stock
-	except shift.IncorrectPasswordError as e:
-	    print(e)
-	except shift.ConnectionTimeoutError as e:
-	    print(e)
+    # connect and subscribe to all available order books
+    try:
+        trader.connect("initiator.cfg", credentials.password)
+        trader.sub_all_order_book() #subscribe to orderbook for all tickers.  cna also choose one particular stock
+    except shift.IncorrectPasswordError as e:
+        print(e)
+    except shift.ConnectionTimeoutError as e:
+        print(e)
 
+    # demo_01(trader)
+    #demo_02(trader)
 
-	def findDelay():
-		final = 10300
-		while final == 10300:
-			final = trader.get_portfolio_summary().get_total_shares()
-		return
-	
-	#demo_07(trader)
-	#demo_01(trader)
-	#print(timeit.timeit(findDelay, number=1))
-	demo_07(trader)
-	#aapl_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, "AAPL", 40)
-	#trader.submit_order(aapl_market_sell)
-	#book = trader.get_portfolio_summary().get_total_shares()
-	#print(book)
-	# demo_01(trader)
-	# demo_02(trader)
-	demo_03(trader)
-	# demo_04(trader)
-	demo_05(trader)
-	# demo_06(trader)
-	time.sleep(2) #upon initial connection, may be lag getting order book. also after submitting order may need time to populate
-	demo_07(trader)
-	# demo_07(trader)
-	# demo_08(trader)
-	# demo_09(trader)
-	# demo_10(trader)
+    #time.sleep(2) #upon initial connection, may be lag getting order book. also after submitting order may need time to populate
+    demo_03(trader)
+    # demo_04(trader)
+    # demo_05(trader)
+    # demo_06(trader)
+    demo_07(trader)
+    # demo_08(trader)
+    # demo_09(trader)
+    # demo_10(trader)
 
-	# disconnect
+    # disconnect
 
-	trader.disconnect()
+    trader.disconnect()
 
-	return
+    return
 
 
 if __name__ == "__main__":

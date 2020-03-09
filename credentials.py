@@ -1,4 +1,4 @@
-user = "democlient"
+user = "test001"
 password = "password"
 
 
@@ -12,6 +12,9 @@ Competition password:
 nXxS3qxkdLUTkkF9
 
 #######################
+
+user = "democlient"
+password = "password"
 
 Test users:
 test001 - test009
