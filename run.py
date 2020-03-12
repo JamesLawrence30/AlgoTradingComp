@@ -29,7 +29,8 @@ def closePositions(trader: shift.Trader, ticker, lastTrade):
 
     # Close / Cover all open positions
     """
-    either sell at market or at best bid w/ volume required
+    Either sell at market or at best bid w/ volume required
+    """
     """
     if lastTrade is 'B': # Close out long position
         aapl_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
@@ -37,7 +38,8 @@ def closePositions(trader: shift.Trader, ticker, lastTrade):
     else: # Cover short position
         aapl_market_buy = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
         trader.submit_order(aapl_market_buy)
-    print("All closing orders submitted")
+    """
+    print("**TODO** All closing orders submitted")
 
     return
 
@@ -52,26 +54,25 @@ def moneyMaker(trader: shift.Trader, ticker, dayEnd, lag):
 
     currentDirection = 0
     signal = 'S'
+
+    # While the time is before end of day...
     while(dayEnd > rightNow):
-        #print("Make trades ...",rightNow)
+        # Pause and wait for change in prices
         time.sleep(lag)
         print("Total P/L:",trader.get_portfolio_summary().get_total_realized_pl())
         """
-        use MARKET Orders for now...#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Do something with bid-ask spread for next week*************************
-        make trades here
+        Make Trades Here:
         """
         if len(priceQueue) > 2: # Queue is full
-            #print(priceQueue)
-            firstDeriv = np.gradient(priceQueue, 1)
-            #print(firstDeriv[2])
+            firstDeriv = np.gradient(priceQueue, 1) # Find rate of change of prices
 
-            # Switch from decreasing to increasing = buy [buy @ local minima]
+            # Prices switch from decreasing to increasing = buy  [buy @ local minima]
             if firstDeriv[2] > 0 and signal is 'S':
                 limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, ticker, 1, trader.get_best_price(ticker).get_bid_price())
                 trader.submit_order(limit_buy)
                 print("buy @", trader.get_last_price(ticker))
                 signal = 'B'
-            # Switch from increasing to decreasing = sell [sell @ local maxima]
+            # Prices switch from increasing to decreasing = sell  [sell @ local maxima]
             elif firstDeriv[2] < 0 and signal is 'B':
                 limit_buy = shift.Order(shift.Order.Type.LIMIT_SELL, ticker, 1, trader.get_best_price(ticker).get_ask_price())
                 trader.submit_order(limit_buy)
@@ -99,12 +100,12 @@ def moneyMaker(trader: shift.Trader, ticker, dayEnd, lag):
 def main(argv):
 
     # Create trader object
-    trader = shift.Trader(credentials.user) # Change to competition user!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHANGE**********************
+    trader = shift.Trader(credentials.user) # **Change to competition user****************************************
 
     # Connect and subscribe to all available order books
     try:
-        trader.connect("initiator.cfg", credentials.password) # Change to competition pass!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHANGE*************************
-        trader.sub_all_order_book() # Subscribe to orderbook for all tickers.  cna also choose one particular stock
+        trader.connect("initiator.cfg", credentials.password) # **Change to competition password*****************************
+        trader.sub_all_order_book() # Subscribe to orderbook for all tickers.  Can also choose one particular stock
     except shift.IncorrectPasswordError as e:
         print(e)
     except shift.ConnectionTimeoutError as e:
@@ -117,22 +118,22 @@ def main(argv):
     rightNow = dt.datetime.now()
 
     # Start of trading day datetime
-    #startTime = dt.time(10,30,00)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!UNCOMMENT*************************
-    startTime = dt.time(3,37,00)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REMOVE**************************
+    startTime = dt.time(10,30,00) # **Competition time******************************
+    #startTime = dt.time(3,59,00) # **Set time for development**
     dayStart = dt.datetime.combine(today,startTime)
 
     # Wait to begin trading
     trafficLight(rightNow, dayStart, 0.5)
 
     # End of trading day datetime
-    #endTime = dt.time(16,58,30)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!UNCOMMENT*************************
-    endTime = dt.time(3,40,30)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REMOVE**************************
+    endTime = dt.time(16,58,30) # **Competition time********************************
+    #endTime = dt.time(4,0,30) # **Set time for development**
     dayEnd = dt.datetime.combine(today,endTime)
 
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
     ticker = "AAPL"
-    moneyMaker(trader, ticker, dayEnd, 5.0)
+    moneyMaker(trader, ticker, dayEnd, 0.50)
     
     # Disconnect
     print("Final buying power:",trader.get_portfolio_summary().get_total_bp())
