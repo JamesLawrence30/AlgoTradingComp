@@ -1,6 +1,7 @@
 import sys
 import time
 import credentials
+import numpy as np
 import datetime as dt
 import shift
 
@@ -17,39 +18,79 @@ def trafficLight(rightNow, dayStart, wait):
         return
 
 
-def closePositions():
+def closePositions(trader: shift.Trader, ticker, lastTrade):
 
     # Cancel pending orders
-    print("Waiting list size: " + str(trader.get_waiting_list_size()))
-    print("Canceling all pending orders...")
+    print("Waiting list size: " + str(trader.get_waiting_list_size()) + " , Canceling all pending orders...")
     trader.cancel_all_pending_orders()
     print("Waiting list size: " + str(trader.get_waiting_list_size()))
     print("All pending orders cancelled") # Cancel outstanding open orders before entering closing orders
 
-    # Close / Cover all open positions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO******************************************
+
+    # Close / Cover all open positions
     """
     either sell at market or at best bid w/ volume required
     """
+    if lastTrade is 'B': # Close out long position
+        aapl_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+        trader.submit_order(aapl_market_sell)
+    else: # Cover short position
+        aapl_market_buy = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+        trader.submit_order(aapl_market_buy)
     print("All closing orders submitted")
 
     return
 
 
-def moneyMaker(dayEnd, lag):
+def moneyMaker(trader: shift.Trader, ticker, dayEnd, lag):
 
     # Datetime beginning trading
     rightNow = dt.datetime.now()
 
+    # FIFO queue initialized
+    priceQueue = []
+
+    currentDirection = 0
+    signal = 'S'
     while(dayEnd > rightNow):
-        print("Make trades ...",rightNow)
+        #print("Make trades ...",rightNow)
         time.sleep(lag)
+        print("Total P/L:",trader.get_portfolio_summary().get_total_realized_pl())
         """
+        use MARKET Orders for now...#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Do something with bid-ask spread for next week*************************
         make trades here
         """
+        if len(priceQueue) > 2: # Queue is full
+            #print(priceQueue)
+            firstDeriv = np.gradient(priceQueue, 1)
+            #print(firstDeriv[2])
+
+            # Switch from decreasing to increasing = buy [buy @ local minima]
+            if firstDeriv[2] > 0 and signal is 'S':
+                limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, ticker, 1, trader.get_best_price(ticker).get_bid_price())
+                trader.submit_order(limit_buy)
+                print("buy @", trader.get_last_price(ticker))
+                signal = 'B'
+            # Switch from increasing to decreasing = sell [sell @ local maxima]
+            elif firstDeriv[2] < 0 and signal is 'B':
+                limit_buy = shift.Order(shift.Order.Type.LIMIT_SELL, ticker, 1, trader.get_best_price(ticker).get_ask_price())
+                trader.submit_order(limit_buy)
+                print("sell @", trader.get_last_price(ticker))
+                signal = 'S'
+
+            # Drop oldest price, shift the prices over, add the newest price to queue
+            priceQueue[0]=priceQueue[1]
+            priceQueue[1]=priceQueue[2]
+            priceQueue[2]=trader.get_last_price(ticker)
+
+        else: # Queue is not full
+            priceQueue.append(trader.get_last_price(ticker)) # Fill the queue from oldest price to latest price
+
+
         rightNow = dt.datetime.now() # Reset time rightNow
 
     # 90 seconds till end of trading day
-    closePositions()
+    closePositions(trader, ticker, signal)
 
     # Done trading
     return
@@ -77,7 +118,7 @@ def main(argv):
 
     # Start of trading day datetime
     #startTime = dt.time(10,30,00)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!UNCOMMENT*************************
-    startTime = dt.time(23,49,30)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REMOVE**************************
+    startTime = dt.time(3,37,00)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REMOVE**************************
     dayStart = dt.datetime.combine(today,startTime)
 
     # Wait to begin trading
@@ -85,13 +126,16 @@ def main(argv):
 
     # End of trading day datetime
     #endTime = dt.time(16,58,30)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!UNCOMMENT*************************
-    endTime = dt.time(23,51,00)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REMOVE**************************
+    endTime = dt.time(3,40,30)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REMOVE**************************
     dayEnd = dt.datetime.combine(today,endTime)
 
     # Begin trading
-    moneyMaker(dayEnd, 0.25)
+    print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
+    ticker = "AAPL"
+    moneyMaker(trader, ticker, dayEnd, 5.0)
     
     # Disconnect
+    print("Final buying power:",trader.get_portfolio_summary().get_total_bp())
     trader.disconnect()
 
     return

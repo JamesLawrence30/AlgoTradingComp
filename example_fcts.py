@@ -89,12 +89,13 @@ def demo_04(trader: shift.Trader):
     return
 
 
-def demo_05(trader: shift.Trader):
+def demo_05(rand, trader: shift.Trader):
     """
     This method cancels all the orders in the waiting list.
     :param trader:
     :return:
     """
+    print(rand)
 
     print(
         "Symbol\t\t\t\tType\t  Price\t\tSize\tExecuted\tID\t\t\t\t\t\t\t\t\t\t\t\t\t\t Status\t\tTimestamp"
@@ -306,7 +307,7 @@ def main(argv):
     # demo_03(trader)
     # demo_04(trader)
     time.sleep(1)
-    demo_05(trader)
+    demo_05(0.5, trader)
     # demo_06(trader)
     # time.sleep(2) #upon initial connection, may be lag getting order book. also after submitting order may need time to populate
     # demo_07(trader)
