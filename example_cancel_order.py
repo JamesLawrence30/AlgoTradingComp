@@ -1,5 +1,6 @@
 import sys
 import time
+import timeit
 import credentials
 
 import shift
@@ -12,7 +13,7 @@ def demo_01(trader: shift.Trader):
     :return:
     """
 
-    limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, "AAPL", 1, 700.00)
+    limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, "AAPL", 1, 68.00)
     trader.submit_order(limit_buy)
 
     return
@@ -119,9 +120,11 @@ def demo_05(trader: shift.Trader):
 
     print("Canceling all pending orders...", end=" ")
 
-    # trader.cancel_all_pending_orders() also works
+    trader.cancel_all_pending_orders() #also works
+    """
     for order in trader.get_waiting_list():
         trader.submit_cancellation(order)
+    
 
     i = 0
     while trader.get_waiting_list_size() > 0:
@@ -130,7 +133,7 @@ def demo_05(trader: shift.Trader):
         time.sleep(1)
 
     print()
-
+    """
     print("Waiting list size: " + str(trader.get_waiting_list_size()))
 
     return
@@ -210,10 +213,10 @@ def demo_08(trader: shift.Trader):
 
     aapl_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, "AAPL", 1)
     trader.submit_order(aapl_market_sell)
-
+    """
     xom_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, "XOM", 1)
     trader.submit_order(xom_market_sell)
-
+	"""
     return
 
 
@@ -264,6 +267,19 @@ def demo_10(trader: shift.Trader):
         )
 
 
+def findDelay(trader: shift.Trader):
+	initial = trader.get_portfolio_summary().get_total_shares()
+	print(initial)
+
+	final = initial
+
+	demo_01(trader)
+	while final == initial:
+		final = trader.get_portfolio_summary().get_total_shares()
+		print(final)
+	
+	return
+
 def main(argv):
     # create trader object
     trader = shift.Trader(credentials.user)
@@ -277,21 +293,29 @@ def main(argv):
     except shift.ConnectionTimeoutError as e:
         print(e)
 
+    #demo_07(trader)
+    demo_01(trader)
+    #print(timeit.timeit(findDelay, number=1))
+    # demo_07(trader)
+    #aapl_market_sell = shift.Order(shift.Order.Type.MARKET_SELL, "AAPL", 40)
+    #trader.submit_order(aapl_market_sell)
+    #book = trader.get_portfolio_summary().get_total_shares()
+    #print(book)
     # demo_01(trader)
-    #demo_02(trader)
-
-    #time.sleep(2) #upon initial connection, may be lag getting order book. also after submitting order may need time to populate
-    demo_03(trader)
+    # demo_02(trader)
+    # demo_03(trader)
     # demo_04(trader)
-    # demo_05(trader)
+    time.sleep(1)
+    demo_05(trader)
     # demo_06(trader)
-    demo_07(trader)
+    # time.sleep(2) #upon initial connection, may be lag getting order book. also after submitting order may need time to populate
+    # demo_07(trader)
+    # demo_07(trader)
     # demo_08(trader)
     # demo_09(trader)
     # demo_10(trader)
 
     # disconnect
-
     trader.disconnect()
 
     return
