@@ -68,13 +68,15 @@ def moneyMaker(trader: shift.Trader, ticker, dayEnd, lag):
 
             # Prices switch from decreasing to increasing = buy  [buy @ local minima]
             if firstDeriv[2] > 0 and signal is 'S':
-                limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, ticker, 1, trader.get_best_price(ticker).get_bid_price())
+                #trader.cancel_all_pending_orders() # Make sure we have buying power
+                limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, ticker, 10, trader.get_best_price(ticker).get_bid_price())
                 trader.submit_order(limit_buy)
                 print("buy @", trader.get_last_price(ticker))
                 signal = 'B'
             # Prices switch from increasing to decreasing = sell  [sell @ local maxima]
             elif firstDeriv[2] < 0 and signal is 'B':
-                limit_buy = shift.Order(shift.Order.Type.LIMIT_SELL, ticker, 1, trader.get_best_price(ticker).get_ask_price())
+                #trader.cancel_all_pending_orders() # Make sure we have buying power
+                limit_buy = shift.Order(shift.Order.Type.LIMIT_SELL, ticker, 10, trader.get_best_price(ticker).get_ask_price())
                 trader.submit_order(limit_buy)
                 print("sell @", trader.get_last_price(ticker))
                 signal = 'S'
@@ -119,7 +121,7 @@ def main(argv):
 
     # Start of trading day datetime
     startTime = dt.time(10,30,00) # **Competition time******************************
-    #startTime = dt.time(3,59,00) # **Set time for development**
+    #startTime = dt.time(22,53,00) # **Set time for development**
     dayStart = dt.datetime.combine(today,startTime)
 
     # Wait to begin trading
@@ -127,13 +129,13 @@ def main(argv):
 
     # End of trading day datetime
     endTime = dt.time(16,58,30) # **Competition time********************************
-    #endTime = dt.time(4,0,30) # **Set time for development**
+    #endTime = dt.time(23,56,30) # **Set time for development**
     dayEnd = dt.datetime.combine(today,endTime)
 
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
-    ticker = "AAPL"
-    moneyMaker(trader, ticker, dayEnd, 0.50)
+    ticker = "SPY"
+    moneyMaker(trader, ticker, dayEnd, 5.0)
     
     # Disconnect
     print("Final buying power:",trader.get_portfolio_summary().get_total_bp())
