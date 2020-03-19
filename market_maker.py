@@ -54,14 +54,16 @@ def moneyMaker(trader: shift.Trader, ticker, dayEnd, lag):
 
     currentDirection = 0
     signal = 'S'
+    count = 0
 
     # While the time is before end of day...
     while(dayEnd > rightNow):
         # Pause and wait for change in prices
-        time.sleep(lag)
+        #time.sleep(lag)
         print("Total P/L:",trader.get_portfolio_summary().get_total_realized_pl())
         """
         Make Trades Here:
+        """
         """
         if len(priceQueue) > 2: # Queue is full
             firstDeriv = np.gradient(priceQueue, 1) # Find rate of change of prices
@@ -88,7 +90,20 @@ def moneyMaker(trader: shift.Trader, ticker, dayEnd, lag):
 
         else: # Queue is not full
             priceQueue.append(trader.get_last_price(ticker)) # Fill the queue from oldest price to latest price
+            """
+        if count % 10 == 0:
+            for order in trader.get_waiting_list():
+                trader.submit_cancellation(order)
 
+        time.sleep(lag)
+
+        limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, ticker, 1, trader.get_best_price(ticker).get_bid_price())
+        trader.submit_order(limit_buy)
+
+        #time.sleep(lag)
+
+        limit_sell = shift.Order(shift.Order.Type.LIMIT_SELL, ticker, 1, trader.get_best_price(ticker).get_ask_price())
+        trader.submit_order(limit_sell)
 
         rightNow = dt.datetime.now() # Reset time rightNow
 
@@ -120,22 +135,22 @@ def main(argv):
     rightNow = dt.datetime.now()
 
     # Start of trading day datetime
-    startTime = dt.time(10,30,00) # **Competition time******************************
-    #startTime = dt.time(22,53,00) # **Set time for development**
+    #startTime = dt.time(10,30,00) # **Competition time******************************
+    startTime = dt.time(0,0,0) # **Set time for development**
     dayStart = dt.datetime.combine(today,startTime)
 
     # Wait to begin trading
     trafficLight(rightNow, dayStart, 0.5)
 
     # End of trading day datetime
-    endTime = dt.time(16,58,30) # **Competition time********************************
-    #endTime = dt.time(23,56,30) # **Set time for development**
+    #endTime = dt.time(16,58,30) # **Competition time********************************
+    endTime = dt.time(14,14,30) # **Set time for development**
     dayEnd = dt.datetime.combine(today,endTime)
 
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
-    ticker = "SPY"
-    moneyMaker(trader, ticker, dayEnd, 5.0)
+    ticker = "BA"
+    moneyMaker(trader, ticker, dayEnd, 2)
     
     # Disconnect
     print("Final buying power:",trader.get_portfolio_summary().get_total_bp())
