@@ -12,8 +12,6 @@ import shift
 
 # Imported Functions
 sys.path.insert(1, './functions')
-from portfolioSummary import portfolioSummary
-from closePositions import closePositions
 from firstStrategy import firstStrategy
 from marketMaker import marketMaker
 
@@ -37,7 +35,7 @@ def main(argv):
 
     # End of trading day datetime
     endTime = dt.time(16,59,0) # **Competition time********************************
-    #endTime = dt.time(10,11,30) # **Set time for development**
+    #endTime = dt.time(10,16,30) # **Set time for development**
     dayEnd = dt.datetime.combine(today,endTime)
 
     # Begin trading
@@ -46,8 +44,14 @@ def main(argv):
     #ticker = "SPY"
     #firstStrategy(trader, ticker, dayEnd, 5.0)
 
-    ticker = "SPY" # "BA"
-    marketMaker(trader, ticker, dayEnd, .4)
+    ticker = "CSCO"
+    marketMaker(trader, ticker, dayEnd, 3, 30, 0.00) # Lag, Max fill time, Difference from bid/ask ( - contracts spread, + increases spread)
+    """
+    marketMaker(trader, "CSCO", dayEnd, 3, 30, 0.00) ***
+    marketMaker(trader, "BA", dayEnd, 3, 30, -0.02)
+    marketMaker(trader, "TRV", dayEnd, 3, 30, 0.01)
+    marketMaker(trader, "UNH", dayEnd, 3, 30, 0.01)
+    """
     
     # Disconnect
     print("Final buying power:",trader.get_portfolio_summary().get_total_bp())

@@ -10,6 +10,9 @@ import numpy as np
 import datetime as dt
 import shift
 
+# Imported Functions
+from portfolioSummary import portfolioSummary
+
 def closePositions(trader: shift.Trader):
     """ Takes Trader Object as Input and Closes All Open Orders"""
 
