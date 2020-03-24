@@ -26,7 +26,7 @@ def marketMakerMulti(trader: shift.Trader, tickerList, dayEnd):
     # While the time is before end of day...
     while(dayEnd > rightNow):
         for ticker in tickerList:
-            ticker, lag, fillTime, spreadWiden = tickerList[ticker]
+            ticker, lag, fillTime, spreadWiden = ticker
             fillTime = fillTime*10
 
             print(rightNow, "Total P/L:",trader.get_portfolio_summary().get_total_realized_pl())
