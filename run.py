@@ -14,6 +14,7 @@ import shift
 sys.path.insert(1, './functions')
 from firstStrategy import firstStrategy
 from marketMaker import marketMaker
+from marketMakerMulti import marketMakerMulti
 
 def main(argv):
 
@@ -47,12 +48,13 @@ def main(argv):
     ticker = "CSCO"
     marketMaker(trader, ticker, dayEnd, 3, 30, 0.00) # Lag, Max fill time, Difference from bid/ask ( - contracts spread, + increases spread)
     """
+    marketMakerMulti(trader, (ticker, dayEnd, 3, 30, 0.00))
     marketMaker(trader, "CSCO", dayEnd, 3, 30, 0.00) ***
     marketMaker(trader, "BA", dayEnd, 3, 30, -0.02)
     marketMaker(trader, "TRV", dayEnd, 3, 30, 0.01)
     marketMaker(trader, "UNH", dayEnd, 3, 30, 0.01)
     """
-    
+
     # Disconnect
     print("Final buying power:",trader.get_portfolio_summary().get_total_bp())
     trader.disconnect()
