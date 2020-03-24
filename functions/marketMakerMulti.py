@@ -13,21 +13,21 @@ import shift
 # Imported Functions
 from closePositions import closePositions
 
-def marketMakerMulti(trader: shift.Trader, tickerList):
+def marketMakerMulti(trader: shift.Trader, tickerList, dayEnd):
 
     # TickerList format:
-    # [ (ticker, dayEnd, lag, fillTime, spreadWiden), ...]
+    # [ (ticker, lag, fillTime, spreadWiden), ...]
 
 
     # Datetime of simulation
     rightNow =  trader.get_last_trade_time()
 
-    fillTime = fillTime*10
     count = 1
     # While the time is before end of day...
     while(dayEnd > rightNow):
         for ticker in tickerList:
-            ticker, dayEnd, lag, fillTime, spreadWiden = tickerList[ticker]
+            ticker, lag, fillTime, spreadWiden = tickerList[ticker]
+            fillTime = fillTime*10
 
             print(rightNow, "Total P/L:",trader.get_portfolio_summary().get_total_realized_pl())
             """

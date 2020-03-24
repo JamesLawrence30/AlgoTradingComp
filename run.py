@@ -46,7 +46,9 @@ def main(argv):
     #firstStrategy(trader, ticker, dayEnd, 5.0)
 
     ticker = "CSCO"
-    marketMaker(trader, ticker, dayEnd, 3, 30, 0.00) # Lag, Max fill time, Difference from bid/ask ( - contracts spread, + increases spread)
+    #marketMaker(trader, ticker, dayEnd, 3, 30, 0.00) # Lag, Max fill time, Difference from bid/ask ( - contracts spread, + increases spread)
+    marketMakerMulti(trader, [(ticker, 3, 30, 0.00)], dayEnd)
+    # marketMakerMulti(trader, [(ticker, 3, 30, 0.00), ('BA', 3, 30, -0.02)], dayEnd)
     """
     marketMakerMulti(trader, (ticker, dayEnd, 3, 30, 0.00))
     marketMaker(trader, "CSCO", dayEnd, 3, 30, 0.00) ***
