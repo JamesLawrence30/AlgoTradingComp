@@ -42,13 +42,12 @@ def main(argv):
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
 
-    #ticker = "SPY"
-    #firstStrategy(trader, ticker, dayEnd, 5.0)
+    ticker = "CSCO"
+    firstStrategy(trader, ticker, dayEnd, 1.0, 8, 0.00)
 
     ticker = "CSCO"
     #marketMaker(trader, ticker, dayEnd, 3, 30, 0.00) # Lag, Max fill time, Difference from bid/ask ( - contracts spread, + increases spread)
-    # marketMakerMulti(trader, [(ticker, 3, 30, 0.00)], dayEnd)
-    marketMakerMulti(trader, [(ticker, 3, 30, 0.00), ('BA', 3, 30, -0.02)], dayEnd)
+    #marketMakerMulti(trader, [(ticker, 3, 30, 0.00), ('BA', 3, 30, -0.02)], dayEnd)
     """
     marketMakerMulti(trader, (ticker, dayEnd, 3, 30, 0.00))
     marketMaker(trader, "CSCO", dayEnd, 3, 30, 0.00) ***

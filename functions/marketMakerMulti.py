@@ -40,7 +40,7 @@ def marketMakerMulti(trader: shift.Trader, tickerList, dayEnd):
             time.sleep(lag) # Give prices some time to change
 
             # Submit a buy order
-            buySize = round(trader.get_best_price(ticker).get_ask_size() / 3) # Only buy as much as you can sell. Divide by 3 so buying power lasts on high volume
+            buySize = max(1,round(trader.get_best_price(ticker).get_ask_size() / 3)) # Only buy as much as you can sell. Divide by 3 so buying power lasts on high volume. At least 1
             buyPrice = trader.get_best_price(ticker).get_bid_price()-spreadWiden # Can buy above bid with wide spread, or below bid if high volume
             limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, ticker, buySize, buyPrice)
             trader.submit_order(limit_buy)
@@ -62,6 +62,7 @@ def marketMakerMulti(trader: shift.Trader, tickerList, dayEnd):
             		limit_sell = shift.Order(shift.Order.Type.LIMIT_SELL, ticker, buySize, sellPrice)
             		trader.submit_order(limit_sell)
             		print("Sell all @", sellPrice)
+                    #count = count - 2 # lower count!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! **TODO**
             	else:
             		# List for sale and Hold as inventory for now, do not market sell for an immediate loss
                     # 	Note: holding inventory reduces buying power, can lead to rejected orders
@@ -76,6 +77,7 @@ def marketMakerMulti(trader: shift.Trader, tickerList, dayEnd):
             			limit_sell = shift.Order(shift.Order.Type.LIMIT_SELL, ticker, order.executed_size, sellPrice)
             			trader.submit_order(limit_sell)
             			print("Sell", order.executed_size, "@", sellPrice)
+                        #count = count - 2 # lower count!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! **TODO**
             		else:
             			# List for sale and Hold as inventory for now, do not market sell for an immediate loss
                         # 	Note: holding inventory reduces buying power, can lead to rejected orders
