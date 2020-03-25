@@ -9,6 +9,7 @@ import credentials
 import numpy as np
 import datetime as dt
 import shift
+import threading
 
 # Imported Functions
 sys.path.insert(1, './functions')
@@ -42,10 +43,17 @@ def main(argv):
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
 
-    ticker = "CSCO"
-    firstStrategy(trader, ticker, dayEnd, 1.0, 8, 0.00)
+    # ticker = "CSCO"
+    # firstStrategy(trader, ticker, dayEnd, 1.0, 8, 0.00)
 
-    ticker = "CSCO"
+    cscoMACD = threading.Thread(target=firstStrategy, args=[trader, 'CSCO', dayEnd, 1.0, 8, 0.00], name='cscoMACD')
+    spyMACD = threading.Thread(target=firstStrategy, args=[trader, 'SPY', dayEnd, 1.0, 8, 0.00], name='spyMACD')
+
+    cscoMACD.start()
+    spyMACD.start()
+
+    cscoMACD.join()
+    spyMACD.join()
     #marketMaker(trader, ticker, dayEnd, 3, 30, 0.00) # Lag, Max fill time, Difference from bid/ask ( - contracts spread, + increases spread)
     #marketMakerMulti(trader, [(ticker, 3, 30, 0.00), ('BA', 3, 30, -0.02)], dayEnd)
     """
