@@ -13,7 +13,7 @@ import shift
 # Imported Functions
 from portfolioSummary import portfolioSummary
 
-def closePositions(trader: shift.Trader):
+def closePositions(trader: shift.Trader, ticker):
     """ Takes Trader Object as Input and Closes All Open Orders"""
 
     # Cancel pending orders
@@ -25,15 +25,15 @@ def closePositions(trader: shift.Trader):
 
     # Close / Cover all open positions
     portfolioSummary(trader) # Print summary of portfolio
-    for item in trader.get_portfolio_items().values():
-        if item.get_shares() > 0:
-            print("Open long positions")
-            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, item.get_symbol(), int(item.get_shares() / 100)) # Order size in 100's of shares, strictly as an int
-            trader.submit_order(closeLong)
-        if item.get_shares() < 0:
-            print("Open short positions")
-            coverShort = shift.Order(shift.Order.Type.MARKET_BUY, item.get_symbol(), int(item.get_shares() / -100))
-            trader.submit_order(coverShort)
+    item = trader.get_portfolio_item(ticker)
+    if item.get_shares() > 0:
+        print("Open long positions")
+        closeLong = shift.Order(shift.Order.Type.MARKET_SELL, item.get_symbol(), int(item.get_shares() / 100)) # Order size in 100's of shares, strictly as an int
+        trader.submit_order(closeLong)
+    if item.get_shares() < 0:
+        print("Open short positions")
+        coverShort = shift.Order(shift.Order.Type.MARKET_BUY, item.get_symbol(), int(item.get_shares() / -100))
+        trader.submit_order(coverShort)
     print("All closing orders submitted")
 
 

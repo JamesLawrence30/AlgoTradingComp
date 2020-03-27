@@ -33,7 +33,7 @@ def firstStrategy(trader: shift.Trader, ticker, dayEnd, lag, fillTime, adjustmen
         Make Trades Here:
         """
         if count % (lag*50) == 0 or trader.get_portfolio_summary().get_total_bp() < 150000: # Every so often, sell off inventory.  Wait longer if lower lag ((1/lag)*15)
-            closePositions(trader) # Free up buying power and reduce risk
+            closePositions(trader, ticker) # Free up buying power and reduce risk
             signal = 'S' # Force to start with long position
             print("Sold inventory, risk & bp reset")
 
@@ -115,7 +115,7 @@ def firstStrategy(trader: shift.Trader, ticker, dayEnd, lag, fillTime, adjustmen
         count = count + 1
 
     # 90 seconds till end of trading day
-    closePositions(trader)
+    closePositions(trader, ticker)
 
     # Done trading
     return

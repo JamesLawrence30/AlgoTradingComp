@@ -27,7 +27,7 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, lag=3, fillTime=20, spread
         Make Trades Here:
         """
         if count % (lag*3) == 0 or trader.get_portfolio_summary().get_total_bp() < 150000: # Every so often, sell off inventory.  Wait longer if lower lag ((1/lag)*15)
-        	closePositions(trader) # Free up buying power and reduce risk
+        	closePositions(trader, ticker) # Free up buying power and reduce risk
         	print("Sold inventory, risk & bp reset")
 
         time.sleep(lag) # Give prices some time to change
@@ -92,7 +92,7 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, lag=3, fillTime=20, spread
         rightNow =  trader.get_last_trade_time() # Reset datetime of right now
 
     # 60 seconds till end of trading day
-    closePositions(trader)
+    closePositions(trader, ticker)
 
     # Done trading
     return
