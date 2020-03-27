@@ -34,7 +34,7 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, lag=3, fillTime=20, spread
         time.sleep(lag) # Give prices some time to change
 
         # Submit a buy order
-        buySize = max(1,round(trader.get_best_price(ticker).get_ask_size() / 4)) # Only buy as much as you can sell. Divide by 3 so buying power lasts on high volume. At least 2
+        buySize = max(1,round(trader.get_best_price(ticker).get_ask_size() / 5)) # Only buy as much as you can sell. Divide by 3 so buying power lasts on high volume. At least 2
         buyPrice = trader.get_best_price(ticker).get_bid_price()-spreadWiden # Can buy above bid with wide spread, or below bid if high volume
         limit_buy = shift.Order(shift.Order.Type.LIMIT_BUY, ticker, buySize, buyPrice)
         trader.submit_order(limit_buy)
