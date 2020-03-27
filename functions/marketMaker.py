@@ -22,11 +22,12 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, lag=3, fillTime=20, spread
     count = 1
     # While the time is before end of day...
     while(dayEnd > rightNow):
-        #print(rightNow, "Total P/L:",trader.get_portfolio_summary().get_total_realized_pl()) # **************************************************************************Good for developing
+        # # **************************************************************************Good for developing
         """
         Make Trades Here:
         """
         if count % (lag*2) == 0 or trader.get_portfolio_summary().get_total_bp() < 150000: # Every so often, sell off inventory.  Wait longer if lower lag ((1/lag)*15)
+        	print(rightNow, "Total P/L:",trader.get_portfolio_summary().get_total_realized_pl())
         	closePositions(trader, ticker) # Free up buying power and reduce risk
         	print("Sold", ticker, "inventory, risk & bp reset")
 
