@@ -19,12 +19,13 @@ def closePositions(trader: shift.Trader, ticker):
     # Cancel pending orders
     print("Waiting list size: " + str(trader.get_waiting_list_size()) + " , Canceling all pending orders...")
     for order in trader.get_waiting_list():
-        trader.submit_cancellation(order)
-    print("All pending orders cancelled") # Cancel outstanding open orders before entering closing orders
+        if order.symbol == ticker:
+            trader.submit_cancellation(order)
+    print("All", ticker, "pending orders cancelled") # Cancel outstanding open orders before entering closing orders
 
 
     # Close / Cover all open positions
-    portfolioSummary(trader) # Print summary of portfolio
+    #portfolioSummary(trader) # Print summary of portfolio**************************************************************************Good for developing
     item = trader.get_portfolio_item(ticker)
     if item.get_shares() > 0:
         print("Open long positions")
@@ -34,7 +35,7 @@ def closePositions(trader: shift.Trader, ticker):
         print("Open short positions")
         coverShort = shift.Order(shift.Order.Type.MARKET_BUY, item.get_symbol(), int(item.get_shares() / -100))
         trader.submit_order(coverShort)
-    print("All closing orders submitted")
+    print("All", ticker, "closing orders submitted")
 
 
     return

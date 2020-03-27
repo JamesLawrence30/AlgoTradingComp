@@ -15,7 +15,6 @@ import threading
 sys.path.insert(1, './functions')
 from firstStrategy import firstStrategy
 from marketMaker import marketMaker
-from marketMakerMulti import marketMakerMulti
 
 def main(argv):
 
@@ -45,37 +44,49 @@ def main(argv):
     """
     # ---RATE OF CHANGE STRATEGY--- threads
     cscoMACD = threading.Thread(target=firstStrategy, args=[trader, 'CSCO', dayEnd, 1.0, 8, 0.00], name='cscoMACD')
+    vixyMACD = threading.Thread(target=firstStrategy, args=[trader, 'VIXY', dayEnd, 1.0, 8, 0.00], name='vixyMACD')
     spyMACD = threading.Thread(target=firstStrategy, args=[trader, 'SPY', dayEnd, 1.0, 8, 0.00], name='spyMACD')
 
     # Initiate threads
     cscoMACD.start()
+    vixyMACD.start()
     spyMACD.start()
 
     # Execute functions on threads
     cscoMACD.join()
+    vixyMACD.join()
     spyMACD.join()
     """
     
     # ---MARKET MAKER STRATEGY--- threads
-    baMRKTMKR = threading.Thread(target=marketMakerMulti, args=[trader, 'BA', dayEnd, 3, 30, -0.02], name='baMRKTMKR')
-    cscoMRKTMKR = threading.Thread(target=marketMakerMulti, args=[trader, 'CSCO', dayEnd, 3, 30, 0.00], name='cscoMRKTMKR')
-    spyMRKTMKR = threading.Thread(target=marketMakerMulti, args=[trader, 'SPY', dayEnd, 3, 30, 0.00], name='spyMRKTMKR')
-    trvMRKTMKR = threading.Thread(target=marketMakerMulti, args=[trader, 'TRV', dayEnd, 3, 30, 0.01], name='trvMRKTMKR')
-    unhMRKTMKR = threading.Thread(target=marketMakerMulti, args=[trader, 'UNH', dayEnd, 3, 30, 0.01], name='unhMRKTMKR')
-
+    """
+    cscoMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'CSCO', dayEnd, 3, 20, 0.00], name='cscoMRKTMKR')
+    vixyMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'VIXY', dayEnd, 3, 20, 0.00], name='vixyMRKTMKR')
+    """
+    baMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, 3, 20, -0.02], name='baMRKTMKR')
+    spyMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'SPY', dayEnd, 3, 20, 0.00], name='spyMRKTMKR')
+    trvMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, 3, 20, 0.01], name='trvMRKTMKR')
+    #unhMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'UNH', dayEnd, 3, 20, 0.01], name='unhMRKTMKR')
+    
     # Initiate threads
-    baMRKTMKR.start()
+    """
     cscoMRKTMKR.start()
+    vixyMRKTMKR.start()
+    """
+    baMRKTMKR.start()
     spyMRKTMKR.start()
     trvMRKTMKR.start()
-    unhMRKTMKR.start()
+    #unhMRKTMKR.start()
 
-    # Execute functions on threads
-    baMRKTMKR.join()
+    # Execute functions on threads    
+    """
     cscoMRKTMKR.join()
+    vixyMRKTMKR.join()
+    """
+    baMRKTMKR.join()
     spyMRKTMKR.join()
     trvMRKTMKR.join()
-    unhMRKTMKR.join()
+    #unhMRKTMKR.join()
 
 
     # Disconnect
