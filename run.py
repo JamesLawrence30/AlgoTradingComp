@@ -15,6 +15,7 @@ import threading
 sys.path.insert(1, './functions')
 from firstStrategy import firstStrategy
 from marketMaker import marketMaker
+from trafficLight import trafficLight
 
 def main(argv):
 
@@ -34,8 +35,14 @@ def main(argv):
     # Date of simulation
     today = trader.get_last_trade_time().date()
 
+    startTime = dt.time(10,0,0) # Competition time
+    dayStart = dt.datetime.combine(today,startTime)
+
+    # Wait for 30 minutes
+    trafficLight(trader.get_last_trade_time(), dayStart, 0.5)
+
     # End of trading day datetime
-    endTime = dt.time(16,59,0) # Competition time
+    endTime = dt.time(15,30,0) # Competition time
     dayEnd = dt.datetime.combine(today,endTime)
 
     # Begin trading
@@ -62,9 +69,11 @@ def main(argv):
     """
     cscoMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'CSCO', dayEnd, 3, 20, 0.00], name='cscoMRKTMKR')
     vixyMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'VIXY', dayEnd, 3, 20, 0.00], name='vixyMRKTMKR')
-    """
     baMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, 3, 20, -0.02], name='baMRKTMKR')
     spyMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'SPY', dayEnd, 3, 20, 0.00], name='spyMRKTMKR')
+    """
+    koMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'KO', dayEnd, 3, 20, 0.00], name='koMRKTMKR')
+    pfeMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'PFE', dayEnd, 3, 20, 0.00], name='pfeMRKTMKR')
     trvMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, 3, 20, 0.01], name='trvMRKTMKR')
     #unhMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'UNH', dayEnd, 3, 20, 0.01], name='unhMRKTMKR')
     
@@ -72,9 +81,11 @@ def main(argv):
     """
     cscoMRKTMKR.start()
     vixyMRKTMKR.start()
-    """
     baMRKTMKR.start()
     spyMRKTMKR.start()
+    """
+    koMRKTMKR.start()
+    pfeMRKTMKR.start()
     trvMRKTMKR.start()
     #unhMRKTMKR.start()
 
@@ -82,9 +93,11 @@ def main(argv):
     """
     cscoMRKTMKR.join()
     vixyMRKTMKR.join()
-    """
     baMRKTMKR.join()
     spyMRKTMKR.join()
+    """
+    koMRKTMKR.join()
+    pfeMRKTMKR.join()
     trvMRKTMKR.join()
     #unhMRKTMKR.join()
 
