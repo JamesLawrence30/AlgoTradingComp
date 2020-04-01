@@ -39,7 +39,7 @@ def main(argv):
     dayStart = dt.datetime.combine(today,startTime)
 
     # Wait for 30 minutes
-    trafficLight(trader.get_last_trade_time(), dayStart, 0.5)
+    trafficLight(trader, dayStart, 0.5)
 
     # End of trading day datetime
     endTime = dt.time(15,30,0) # Competition time
