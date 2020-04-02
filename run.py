@@ -39,7 +39,7 @@ def main(argv):
     dayStart = dt.datetime.combine(today,startTime)
 
     # Wait for 30 minutes
-    trafficLight(trader, dayStart, 0.5)
+    trafficLight(trader, dayStart, 2.0)
 
     # End of trading day datetime
     endTime = dt.time(15,30,0) # Competition time
@@ -72,9 +72,9 @@ def main(argv):
     baMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, 3, 20, -0.02], name='baMRKTMKR')
     spyMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'SPY', dayEnd, 3, 20, 0.00], name='spyMRKTMKR')
     """
-    koMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'KO', dayEnd, 3, 20, 0.00], name='koMRKTMKR')
-    pfeMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'PFE', dayEnd, 3, 20, 0.00], name='pfeMRKTMKR')
-    trvMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, 3, 20, 0.01], name='trvMRKTMKR')
+    koMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'KO', dayEnd, 3, 30, 0.00], name='koMRKTMKR')
+    pfeMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'PFE', dayEnd, 3, 30, 0.00], name='pfeMRKTMKR')
+    trvMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, 3, 30, 0.01], name='trvMRKTMKR')
     #unhMRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'UNH', dayEnd, 3, 20, 0.01], name='unhMRKTMKR')
     
     # Initiate threads
@@ -103,6 +103,7 @@ def main(argv):
 
 
     # Disconnect
+    time.sleep(59) # Wait for all threads to sell inventory
     print("Final buying power:",trader.get_portfolio_summary().get_total_bp())
     trader.disconnect()
 
