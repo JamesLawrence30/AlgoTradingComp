@@ -12,8 +12,9 @@ import shift
 
 # Imported Functions
 from closePositions import closePositions
+from checkInventory import checkInventory
 
-def marketMaker(trader: shift.Trader, ticker, dayEnd, lag=3, fillTime=20, spreadWiden=0.00):
+def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, lag=3, fillTime=20, spreadWiden=0.00):
 
     # Datetime of simulation
     rightNow =  trader.get_last_trade_time()
@@ -22,16 +23,27 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, lag=3, fillTime=20, spread
     count = 1
     # While the time is before end of day...
     while(dayEnd > rightNow):
-        # # **************************************************************************Good for developing
+        time.sleep(lag) # Give prices some time to change
+        print("P/L:",trader.get_portfolio_summary().get_total_realized_pl())
         """
         Make Trades Here:
         """
-        if count % (lag*2) == 0 or trader.get_portfolio_summary().get_total_bp() < 150000: # Every so often, sell off inventory.  Wait longer if lower lag ((1/lag)*15)
-        	print(rightNow, "Total P/L:",trader.get_portfolio_summary().get_total_realized_pl())
-        	closePositions(trader, ticker) # Free up buying power and reduce risk
-        	print("Sold", ticker, "inventory, risk & bp reset")
+        onHand = trader.get_portfolio_item(ticker).get_shares()*((trader.get_best_price(ticker).get_bid_price()+trader.get_best_price(ticker).get_ask_price())/2) # Portfolio value of the stock
+        maxAllowed = allocation*(1000000 + trader.get_portfolio_summary().get_total_realized_pl()) # Maximum portfolio allocation for this stock
+        print(ticker, "on hand:", onHand, "max:", maxAllowed)
+        if onHand > maxAllowed:
+            closePositions(trader, ticker, onHand, maxAllowed) # Free up buying power and reduce risk
+            continue
+        elif onHand < 0:
+            closePositions(trader, ticker) # Cover unexpected short positions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            continue
 
         time.sleep(lag) # Give prices some time to change
+
+        # Monitor inventory and sell off risk
+        ####Maybe do something with timedelta to make this check occur every 10 minutes, then set current time to new base to add 10 min to
+        ###Also include a check if onHand value has changed +/- 2% to sell off inventory
+        #checkInventory(trader, ticker)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         # Submit a buy order
         buySize = max(1,round(trader.get_best_price(ticker).get_ask_size() / 5)) # Only buy as much as you can sell. Divide by 3 so buying power lasts on high volume. At least 2
@@ -83,11 +95,7 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, lag=3, fillTime=20, spread
         elif trader.get_order(limit_buy.id).status != shift.Order.Status.REJECTED:
             trader.submit_cancellation(limit_buy)
             print("Cancelled", ticker)
-
-        # Monitor inventory and sell off risk
-        """!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! **TODO**
-        checkInventory(trader)
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+        
 
         count = count + 1 # Increment counter
         rightNow =  trader.get_last_trade_time() # Reset datetime of right now
