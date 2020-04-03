@@ -67,13 +67,14 @@ def main(argv):
     
     # ---MARKET MAKER STRATEGY--- threads
     
-    trv1MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .8, 3, 30, 0.01], name='trv1MRKTMKR')
-    trv2MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .8, 3, 30, 0.02], name='trv2MRKTMKR')
-    trv3MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .8, 3, 30, 0.02], name='trv3MRKTMKR')
-    trv4MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .8, 3, 30, 0.02], name='trv4MRKTMKR')
-    trv5MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .8, 3, 30, 0.02], name='trv5MRKTMKR')
-    trv6MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .8, 3, 30, 0.02], name='trv6MRKTMKR')
-    
+    trv1MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, -0.01], name='trv1MRKTMKR')
+    trv2MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, 0.00], name='trv2MRKTMKR')
+    trv3MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, -0.01], name='trv3MRKTMKR')
+    trv4MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, 0.00], name='trv4MRKTMKR')
+    trv5MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, -0.01], name='trv5MRKTMKR')
+    trv6MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, 0.00], name='trv6MRKTMKR')
+    trv7MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, -0.01], name='trv7MRKTMKR')
+    trv8MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'TRV', dayEnd, .85, 3, 30, 0.00], name='trv8MRKTMKR')
     """
     ba1MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .8, 3, 30, -0.02], name='ba1MRKTMKR')
     ba2MRKTMKR = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .8, 3, 30, -0.02], name='ba2MRKTMKR')
@@ -128,6 +129,11 @@ def main(argv):
     trv5MRKTMKR.start()
     time.sleep(8)
     trv6MRKTMKR.start()
+    time.sleep(8)
+    trv7MRKTMKR.start()
+    time.sleep(8)
+    trv8MRKTMKR.start()
+    time.sleep(8)
     
     """
     ba1MRKTMKR.start()
@@ -203,6 +209,8 @@ def main(argv):
     trv4MRKTMKR.join()
     trv5MRKTMKR.join()
     trv6MRKTMKR.join()
+    trv7MRKTMKR.join()
+    trv8MRKTMKR.join()
     
     """
     ba1MRKTMKR.join()

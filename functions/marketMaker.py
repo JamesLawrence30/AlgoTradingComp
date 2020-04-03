@@ -14,7 +14,7 @@ import shift
 from closePositions import closePositions
 from checkInventory import checkInventory
 
-def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, lag=3, fillTime=20, spreadWiden=0.00):
+def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, lag=3, fillTime=30, spreadWiden=0.00):
 
     # Datetime of simulation
     rightNow =  trader.get_last_trade_time()
@@ -31,11 +31,13 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, lag=3, fillTim
         onHand = trader.get_portfolio_item(ticker).get_shares()*((trader.get_best_price(ticker).get_bid_price()+trader.get_best_price(ticker).get_ask_price())/2) # Portfolio value of the stock
         maxAllowed = allocation*(1000000 + trader.get_portfolio_summary().get_total_realized_pl()) # Maximum portfolio allocation for this stock
         print(ticker, "on hand:", onHand, "max:", maxAllowed)
-        if onHand > maxAllowed:
+        if onHand > maxAllowed: #or count > 50 :!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             closePositions(trader, ticker, onHand, maxAllowed) # Free up buying power and reduce risk
+            # count = 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             continue
         elif onHand < 0:
             closePositions(trader, ticker) # Cover unexpected short positions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # count = 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             continue
 
         time.sleep(lag) # Give prices some time to change
