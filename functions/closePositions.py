@@ -42,7 +42,7 @@ def closePositions(trader: shift.Trader, ticker, onHand=0, maxAllowed=0):
     else:
         print("Drop one", ticker)
         for order in trader.get_waiting_list():
-            if order.symbol == ticker and order.Type == 'Type.LIMIT_SELL': # Cancel an unfilled limit sell so we can replace with market sell
+            if order.symbol == ticker and order.type == shift.Order.Type.LIMIT_SELL: # Cancel an unfilled limit sell so we can replace with market sell
                 trader.submit_cancellation(order)
                 break # Only cancel one order so that we make sure we have something to sell
         time.sleep(2.0) # Give time for order to cancel!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
