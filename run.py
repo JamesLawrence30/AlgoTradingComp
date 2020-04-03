@@ -31,7 +31,7 @@ def main(argv):
     except shift.ConnectionTimeoutError as e:
         print(e)
 
-    time.sleep(.5)
+    time.sleep(5)
     # Date of simulation
     today = trader.get_last_trade_time().date()
 
