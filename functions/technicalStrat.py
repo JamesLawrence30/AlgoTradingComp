@@ -20,7 +20,7 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 
     # While the time is before end of day...
     while(dayEnd > rightNow):
-        print("P/L:",trader.get_portfolio_summary().get_total_realized_pl())
+        print("P/L:",trader.get_portfolio_summary().get_total_realized_pl(), " Waiting list:", trader.get_waiting_list_size())
         """
         Make Trades Here:
         """
@@ -50,8 +50,32 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 	            buySize = max(1,round(trader.get_best_price(ticker).get_ask_size() / 5)) # Only buy as much as can sell. Divide so bp lasts on high volume. At least 1
 	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, buySize)
 	            """
+	            
+	            for i in range(1,20): # seems too slow..
+	            	openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            	trader.submit_order(openLong)
+	            
+	            """
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 20)
+	            trader.submit_order(openLong)
+	            
 	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
 	            trader.submit_order(openLong)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            trader.submit_order(openLong)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            trader.submit_order(openLong)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            trader.submit_order(openLong)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            trader.submit_order(openLong)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            trader.submit_order(openLong)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            trader.submit_order(openLong)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
+	            trader.submit_order(openLong)
+	            """
 	            #print("Buy", buySize, ticker, "@", buyPrice)
 	            print("Buy", ticker)
 	            lastTradeSell = False
@@ -65,8 +89,32 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 	            	closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, sellSize) # Order size in 100's of shares, strictly as an int
 	            	trader.submit_order(closeLong)
 	            """
+	            
+	            for i in range(1,20): # seems too slow..
+	            	closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            	trader.submit_order(closeLong)
+	            
+	            """
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 20)
+	            trader.submit_order(closeLong)
+	            
 	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
 	            trader.submit_order(closeLong)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            trader.submit_order(closeLong)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            trader.submit_order(closeLong)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            trader.submit_order(closeLong)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            trader.submit_order(closeLong)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            trader.submit_order(closeLong)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            trader.submit_order(closeLong)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
+	            trader.submit_order(closeLong)
+	            """
 	            #print("Sell", sellSize, ticker, "@", sellPrice)
 	            print("Sell", ticker)
 	            lastTradeSell = True
