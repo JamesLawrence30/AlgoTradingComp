@@ -11,12 +11,11 @@ import shift
 
 # Imported Functions
 from closePositions import closePositions
-from checkInventory import checkInventory
+from manageInventory import manageInventory
 
-def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
+def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 
     rightNow =  trader.get_last_trade_time() # Datetime of simulation
-    lastTradeSell = True # Initialize last trade as SELL
 
     # While the time is before end of day...
     while(dayEnd > rightNow):
@@ -38,9 +37,12 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 
 	        
 	        SMA = priceSeries[:19].mean() # 20 second simple moving average
-	        bUpper = SMA + (priceSeries[:19].std()*3.0) # Upper Bollinger Band
-	        bLower = SMA - (priceSeries[:19].std()*1.5) # Low Bollinger Band - more lenient, safer sell
-	        #######!!!!!!possibly make stdev 3 or 2.5 or 1.5!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	        if lastTradeSell == True:
+	        	bUpper = SMA + (priceSeries[:19].std()*3.0) # Upper Bollinger Band
+	        	bLower = SMA - (priceSeries[:19].std()*1.5) # Low Bollinger Band - more lenient, safer sell
+	        else:
+	        	bUpper = SMA + (priceSeries[:19].std()*1.5) # Upper Bollinger Band - more lenient, safer cover
+	        	bLower = SMA - (priceSeries[:19].std()*3.0) # Low Bollinger Band
 	        #######!!!!!!possibly have a second band outside first..for too strong movement!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -55,28 +57,6 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 	            	openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
 	            	trader.submit_order(openLong)
 	            
-	            """
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 20)
-	            trader.submit_order(openLong)
-	            
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
-	            trader.submit_order(openLong)
-	            """
-	            #print("Buy", buySize, ticker, "@", buyPrice)
 	            print("Buy", ticker)
 	            lastTradeSell = False
 
@@ -94,34 +74,11 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 	            	closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
 	            	trader.submit_order(closeLong)
 	            
-	            """
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 20)
-	            trader.submit_order(closeLong)
-	            
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
-	            trader.submit_order(closeLong)
-	            """
-	            #print("Sell", sellSize, ticker, "@", sellPrice)
 	            print("Sell", ticker)
 	            lastTradeSell = True
 
 
-	        #manageInventory() using the inventory mgmt strat from market maker..in its own file
-
+	        manageInventory(trader, ticker) #using the inventory mgmt strat from market maker..in its own file
 
 
         rightNow =  trader.get_last_trade_time() # Reset datetime of right now

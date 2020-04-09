@@ -57,7 +57,8 @@ def main(argv):
 
     #!!!!!!***SHORT VIXY TO HEDGE AGAINST LOW VOLATILITY DEGRADING STRATEGY***!!!!!
     
-    SPY1 = threading.Thread(target=technicalStrat, args=[trader, "SPY", dayEnd, 1.0], name='SPY1')
+    SPYlong = threading.Thread(target=technicalStrat, args=[trader, "SPY", True, dayEnd, 1.0], name='SPYlong')
+    SPYshort = threading.Thread(target=technicalStrat, args=[trader, "SPY", False, dayEnd, 1.0], name='SPYshort')
     #XOM1 = threading.Thread(target=technicalStrat, args=[trader, "XOM", dayEnd, 1.0], name='XOM1')
     #JPM1 = threading.Thread(target=technicalStrat, args=[trader, "JPM", dayEnd, 1.0], name='JPM1')
     #KO1 = threading.Thread(target=technicalStrat, args=[trader, "KO", dayEnd, 1.0], name='KO1')
@@ -65,10 +66,10 @@ def main(argv):
     #PG1 = threading.Thread(target=technicalStrat, args=[trader, "PG", dayEnd, 1.0], name='PG1')
     #PFE1 = threading.Thread(target=technicalStrat, args=[trader, "PFE", dayEnd, 1.0], name='PFE1')
     #WBA1 = threading.Thread(target=technicalStrat, args=[trader, "WBA", dayEnd, 1.0], name='WBA1')
-    #SPY2 = threading.Thread(target=technicalStrat, args=[trader, "SPY", dayEnd, 1.0], name='SPY2') # **Uses size 10 order**
     
 
-    SPY1.start()
+    SPYlong.start()
+    SPYshort.start()
     #XOM1.start()
     #JPM1.start()
     #KO1.start()
@@ -79,7 +80,8 @@ def main(argv):
     #SPY2.start()
     
 
-    SPY1.join()
+    SPYlong.join()
+    SPYshort.join()
     #XOM1.join()
     #JPM1.join()
     #KO1.join()
