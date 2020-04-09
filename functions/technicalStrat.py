@@ -50,7 +50,7 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 	            buySize = max(1,round(trader.get_best_price(ticker).get_ask_size() / 5)) # Only buy as much as can sell. Divide so bp lasts on high volume. At least 1
 	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, buySize)
 	            """
-	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 10)
+	            openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
 	            trader.submit_order(openLong)
 	            #print("Buy", buySize, ticker, "@", buyPrice)
 	            print("Buy", ticker)
@@ -65,7 +65,7 @@ def technicalStrat(trader: shift.Trader, ticker, dayEnd, lag=1):
 	            	closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, sellSize) # Order size in 100's of shares, strictly as an int
 	            	trader.submit_order(closeLong)
 	            """
-	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 10)
+	            closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
 	            trader.submit_order(closeLong)
 	            #print("Sell", sellSize, ticker, "@", sellPrice)
 	            print("Sell", ticker)
