@@ -37,7 +37,7 @@ def main(argv):
     # Date of simulation
     today = trader.get_last_trade_time().date()
 
-    startTime = dt.time(9,32,0) # Competition time
+    startTime = dt.time(9,30,0) # Competition time
     dayStart = dt.datetime.combine(today,startTime)
 
     # Wait for 30 minutes
@@ -48,7 +48,7 @@ def main(argv):
     dayEnd = dt.datetime.combine(today,endTime)
 
     #Begin collecting prices
-    trader.request_sample_prices(["SPY","XOM", "JPM", "KO", "MRK", "PG", "PFE", "WBA"], 1.0, 26) # Ticker list, sample freq, sample window size
+    trader.request_sample_prices(["SPY","XOM", "JPM", "KO", "MRK", "PG", "PFE", "WBA"], 2.0, 26) # Ticker list, sample freq, sample window size
 
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())

@@ -46,7 +46,7 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 	        #######!!!!!!possibly have a second band outside first..for too strong movement!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-	        # Open long position for now, eventually use to cover shorts too
+	        # Open long position / Cover short position
 	        if lastTradeSell == True and mHist.iloc[-1] > 0 and trader.get_close_price(ticker, True, 1) > bUpper: # ticker, Buy, Size
 	            """
 	            buySize = max(1,round(trader.get_best_price(ticker).get_ask_size() / 5)) # Only buy as much as can sell. Divide so bp lasts on high volume. At least 1
@@ -60,7 +60,7 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 	            print("Buy", ticker)
 	            lastTradeSell = False
 
-	        # Close long positions for now, eventually use to open shorts too
+	        # Close long positions for now / Open short position
 	        elif lastTradeSell == False and mHist.iloc[-1] < 0 and trader.get_close_price(ticker, False, 1) < bLower: # ticker, Sell, Size
 	            """
 	            item = trader.get_portfolio_item(ticker) # Check this stock in our portfolio
@@ -77,8 +77,9 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 	            print("Sell", ticker)
 	            lastTradeSell = True
 
-
-	        #manageInventory(trader, ticker)
+	        item = trader.get_portfolio_item(ticker)
+	        if item.get_shares() != 0:
+	        	manageInventory(trader, ticker, item)
 
 
         rightNow =  trader.get_last_trade_time() # Reset datetime of right now
