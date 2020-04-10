@@ -78,7 +78,7 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 	            lastTradeSell = True
 
 
-	        #manageInventory(trader, ticker) # Needs to analyze order NOT portfolio
+	        manageInventory(trader, ticker)
 
 
         rightNow =  trader.get_last_trade_time() # Reset datetime of right now
