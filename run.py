@@ -48,7 +48,7 @@ def main(argv):
     dayEnd = dt.datetime.combine(today,endTime)
 
     #Begin collecting prices
-    trader.request_sample_prices(["SPY","XOM", "JPM", "KO", "MRK", "PG", "PFE", "WBA"], 2.0, 26) # Ticker list, sample freq, sample window size
+    trader.request_sample_prices(["SPY"], 2.0, 26) # Ticker list, sample freq, sample window size
 
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
