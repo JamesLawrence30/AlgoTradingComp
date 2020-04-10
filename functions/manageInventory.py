@@ -4,7 +4,7 @@ def manageInventory(trader: shift.Trader, ticker):
 
     item = trader.get_portfolio_item(ticker)
     numShares = int(item.get_shares() / 100) # Order size in 100's of shares, strictly as an int
-    print("On hand:", numShares)
+    #print("On hand:", numShares)
     tradedPrice = item.get_price()
     unrealizedPL = 0
 
@@ -34,4 +34,4 @@ def manageInventory(trader: shift.Trader, ticker):
             trader.submit_order(coverShort)
             print(ticker, "stop loss on short")
 
-    print("Remaining:", numShares)
+    #print("Remaining:", numShares)
