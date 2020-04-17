@@ -12,8 +12,6 @@ import shift
 
 # Imported Functions
 from closePositions import closePositions
-from checkInventory import checkInventory
-from manageInventory import manageInventory
 
 def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, orderType, lag=3, fillTime=30, spreadWiden=0.00):
 

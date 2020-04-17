@@ -13,7 +13,6 @@ import threading
 
 # Imported Functions
 sys.path.insert(1, './functions')
-from firstStrategy import firstStrategy
 from marketMaker import marketMaker
 from trafficLight import trafficLight
 from manageInventory import manageInventory
@@ -64,15 +63,15 @@ def main(argv):
     
     # ---MARKET MAKER STRATEGY--- threads
     #******allocation should now be max risk******#
-    longBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA1')
-    longBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA2')
-    longBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA3')
-    longBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA4')
+    longBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA1')
+    longBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA2')
+    longBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA3')
+    longBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA4')
 
-    shortBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA1')
-    shortBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA2')
-    shortBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA3')
-    shortBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA4')
+    shortBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA1')
+    shortBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA2')
+    shortBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA3')
+    shortBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA4')
 
     # --Initiate threads--
     manageInv.start()

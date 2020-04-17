@@ -11,7 +11,6 @@ import shift
 
 # Imported Functions
 from closePositions import closePositions
-from manageInventory import manageInventory
 
 def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 
