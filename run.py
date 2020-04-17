@@ -16,6 +16,7 @@ sys.path.insert(1, './functions')
 from firstStrategy import firstStrategy
 from marketMaker import marketMaker
 from trafficLight import trafficLight
+from manageInventory import manageInventory
 from technicalStrat import technicalStrat
 
 def main(argv):
@@ -27,7 +28,7 @@ def main(argv):
     try:
         trader.connect("initiator.cfg", credentials.password) # **Change to competition password*************************************
         #trader.sub_all_order_book() # Subscribe to orderbook for all tickers.  Can also choose one particular stock
-        trader.sub_order_book("SPY")#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**************************!!!!!!!!!!!!!!!!!
+        trader.sub_order_book("BA")#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**************************!!!!!!!!!!!!!!!!!
     except shift.IncorrectPasswordError as e:
         print(e)
     except shift.ConnectionTimeoutError as e:
@@ -37,63 +38,89 @@ def main(argv):
     # Date of simulation
     today = trader.get_last_trade_time().date()
 
-    startTime = dt.time(9,30,0) # Competition time
+    startTime = dt.time(10,0,0) # Competition time
     dayStart = dt.datetime.combine(today,startTime)
+
+    #Begin collecting prices
+    #trader.request_sample_prices(["BA"], 10.0, 26) # Ticker list, sample freq, sample window size !!!!!!!!!!!
 
     # Wait for 30 minutes
     trafficLight(trader, dayStart, 2.0)
 
     # End of trading day datetime
-    endTime = dt.time(15,55,0) # Competition time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    endTime = dt.time(15,30,0) # Competition time
     dayEnd = dt.datetime.combine(today,endTime)
-
-    #Begin collecting prices
-    trader.request_sample_prices(["SPY"], 2.0, 26) # Ticker list, sample freq, sample window size
 
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
 
-
-
-    #!!!!!!***SHORT VIXY TO HEDGE AGAINST LOW VOLATILITY DEGRADING STRATEGY***!!!!!
     
-    SPYlong = threading.Thread(target=technicalStrat, args=[trader, "SPY", True, dayEnd, 1.0], name='SPYlong')
-    SPYshort = threading.Thread(target=technicalStrat, args=[trader, "SPY", False, dayEnd, 1.0], name='SPYshort')
-    #XOM1 = threading.Thread(target=technicalStrat, args=[trader, "XOM", dayEnd, 1.0], name='XOM1')
-    #JPM1 = threading.Thread(target=technicalStrat, args=[trader, "JPM", dayEnd, 1.0], name='JPM1')
-    #KO1 = threading.Thread(target=technicalStrat, args=[trader, "KO", dayEnd, 1.0], name='KO1')
-    #MRK1 = threading.Thread(target=technicalStrat, args=[trader, "MRK", dayEnd, 1.0], name='MRK1')
-    #PG1 = threading.Thread(target=technicalStrat, args=[trader, "PG", dayEnd, 1.0], name='PG1')
-    #PFE1 = threading.Thread(target=technicalStrat, args=[trader, "PFE", dayEnd, 1.0], name='PFE1')
-    #WBA1 = threading.Thread(target=technicalStrat, args=[trader, "WBA", dayEnd, 1.0], name='WBA1')
-    
+    # Stop loss / take profit
+    manageInv = threading.Thread(target=manageInventory, args=[trader, 'BA', dayEnd], name='manageInv')
 
-    SPYlong.start()
-    SPYshort.start()
-    #XOM1.start()
-    #JPM1.start()
-    #KO1.start()
-    #MRK1.start()
-    #PG1.start()
-    #PFE1.start()
-    #WBA1.start()
-    #SPY2.start()
+    # ---TECHNICAL ANALYSIS STRATEGY--- threads !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    #longTechBA = threading.Thread(target=technicalStrat, args=[trader, "BA", True, dayEnd, 1.0], name='longTechBA')
+    #shortTechBA = threading.Thread(target=technicalStrat, args=[trader, "BA", False, dayEnd, 1.0], name='shortTechBA')
     
+    # ---MARKET MAKER STRATEGY--- threads
+    #******allocation should now be max risk******#
+    longBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA1')
+    longBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA2')
+    longBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA3')
+    longBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 20, 0.08], name='longBA4')
 
-    SPYlong.join()
-    SPYshort.join()
-    #XOM1.join()
-    #JPM1.join()
-    #KO1.join()
-    #MRK1.join()
-    #PG1.join()
-    #PFE1.join()
-    #WBA1.join()
-    #SPY2.join()
+    shortBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA1')
+    shortBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA2')
+    shortBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA3')
+    shortBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 20, 0.08], name='shortBA4')
+
+    # --Initiate threads--
+    manageInv.start()
+
+
+    #longTechBA.start()
+    #shortTechBA.start()
+
+
+    longBA1.start()
+    shortBA1.start()
+    time.sleep(5)
+
+    longBA2.start()
+    shortBA2.start()
+    time.sleep(5)
+
+    longBA3.start()
+    shortBA3.start()
+    time.sleep(5)
+
+    longBA4.start()
+    shortBA4.start()
+    time.sleep(5)
+
+    # --Execute functions on threads-- 
+    manageInv.join()
+
+
+    #longTechBA.join()
+    #shortTechBA.join()
+
+
+    longBA1.join()
+    shortBA1.join()
+
+    longBA2.join()
+    shortBA2.join()
+
+    longBA3.join()
+    shortBA3.join()
+
+    longBA4.join()
+    shortBA4.join()
+
 
     # Disconnect
-    time.sleep(59) # Wait for all threads to sell inventory
-    print("Final waiting list size: " + str(trader.get_waiting_list_size()))
+    time.sleep(60) # Wait for all threads to sell inventory
     print("Final buying power:",trader.get_portfolio_summary().get_total_bp())
     trader.disconnect()
 
