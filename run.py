@@ -17,6 +17,7 @@ from marketMaker import marketMaker
 from trafficLight import trafficLight
 from manageInventory import manageInventory
 from technicalStrat import technicalStrat
+from seeExchange import seeExchange
 
 def main(argv):
 
@@ -27,27 +28,28 @@ def main(argv):
     try:
         trader.connect("initiator.cfg", credentials.password) # **Change to competition password*************************************
         #trader.sub_all_order_book() # Subscribe to orderbook for all tickers.  Can also choose one particular stock
-        trader.sub_order_book("BA")#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**************************!!!!!!!!!!!!!!!!!
+        trader.sub_order_book("CS1")
+        trader.sub_order_book("CS2")
     except shift.IncorrectPasswordError as e:
         print(e)
     except shift.ConnectionTimeoutError as e:
         print(e)
 
-    time.sleep(5)
+    time.sleep(10)
     # Date of simulation
     today = trader.get_last_trade_time().date()
 
-    startTime = dt.time(10,0,0) # Competition time
+    startTime = dt.time(9,30,30) # Competition time
     dayStart = dt.datetime.combine(today,startTime)
 
     #Begin collecting prices
-    #trader.request_sample_prices(["BA"], 10.0, 26) # Ticker list, sample freq, sample window size !!!!!!!!!!!
+    trader.request_sample_prices(["CS1", "CS2"], 5.0, 26) # Ticker list, sample freq, sample window size !!!!!!!!!!!
 
     # Wait for 30 minutes
     trafficLight(trader, dayStart, 2.0)
 
     # End of trading day datetime
-    endTime = dt.time(15,30,0) # Competition time
+    endTime = dt.time(15,50,0) # Competition time
     dayEnd = dt.datetime.combine(today,endTime)
 
     # Begin trading
@@ -55,14 +57,22 @@ def main(argv):
 
     
     # Stop loss / take profit
-    manageInv = threading.Thread(target=manageInventory, args=[trader, 'BA', dayEnd], name='manageInv')
+    manageInvCS1 = threading.Thread(target=manageInventory, args=[trader, 'CS1', dayEnd], name='manageInvCS1')
+    manageInvCS2 = threading.Thread(target=manageInventory, args=[trader, 'CS2', dayEnd], name='manageInvCS2')
 
-    # ---TECHNICAL ANALYSIS STRATEGY--- threads !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #longTechBA = threading.Thread(target=technicalStrat, args=[trader, "BA", True, dayEnd, 1.0], name='longTechBA')
-    #shortTechBA = threading.Thread(target=technicalStrat, args=[trader, "BA", False, dayEnd, 1.0], name='shortTechBA')
+    # ---TECHNICAL ANALYSIS STRATEGY--- threads
+    longTechCS1 = threading.Thread(target=technicalStrat, args=[trader, "CS1", True, dayEnd, 1.0], name='longTechCS1')
+    shortTechCS1 = threading.Thread(target=technicalStrat, args=[trader, "CS1", False, dayEnd, 1.0], name='shortTechCS1')
+
+    longTechCS2 = threading.Thread(target=technicalStrat, args=[trader, "CS2", True, dayEnd, 1.0], name='longTechCS2')
+    shortTechCS2 = threading.Thread(target=technicalStrat, args=[trader, "CS2", False, dayEnd, 1.0], name='shortTechCS2')
+
+    seeExchange(trader, "CS1")
+    seeExchange(trader, "CS2")
     
     # ---MARKET MAKER STRATEGY--- threads
     #******allocation should now be max risk******#
+    """
     longBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA1')
     longBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA2')
     longBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA3')
@@ -72,15 +82,21 @@ def main(argv):
     shortBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA2')
     shortBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA3')
     shortBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA4')
+    """
 
     # --Initiate threads--
-    manageInv.start()
+    manageInvCS1.start()
+    manageInvCS2.start()
 
 
-    #longTechBA.start()
-    #shortTechBA.start()
+    longTechCS1.start()
+    shortTechCS1.start()
+
+    longTechCS2.start()
+    shortTechCS2.start()
 
 
+    """
     longBA1.start()
     shortBA1.start()
     time.sleep(5)
@@ -96,15 +112,21 @@ def main(argv):
     longBA4.start()
     shortBA4.start()
     time.sleep(5)
+    """
 
     # --Execute functions on threads-- 
-    manageInv.join()
+    manageInvCS1.join()
+    manageInvCS2.join()
 
 
-    #longTechBA.join()
-    #shortTechBA.join()
+    longTechCS1.join()
+    shortTechCS1.join()
+
+    longTechCS2.join()
+    shortTechCS2.join()
 
 
+    """
     longBA1.join()
     shortBA1.join()
 
@@ -116,6 +138,7 @@ def main(argv):
 
     longBA4.join()
     shortBA4.join()
+    """
 
 
     # Disconnect

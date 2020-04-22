@@ -18,7 +18,7 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 
     # While the time is before end of day...
     while(dayEnd > rightNow):
-        #print("P/L:",trader.get_portfolio_summary().get_total_realized_pl(), " Waiting list:", trader.get_waiting_list_size())
+        print("P/L:",trader.get_portfolio_summary().get_total_realized_pl(), " Waiting list:", trader.get_waiting_list_size())
         """
         Make Trades Here:
         """
@@ -38,9 +38,9 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 	        SMA = priceSeries[:19].mean() # 20 second simple moving average
 	        if lastTradeSell == True:
 	        	bUpper = SMA + (priceSeries[:19].std()*3.0) # Upper Bollinger Band
-	        	bLower = SMA - (priceSeries[:19].std()*3.0) # Low Bollinger Band - more lenient, safer sell
+	        	bLower = SMA - (priceSeries[:19].std()*1.5) # Low Bollinger Band - more lenient, safer sell
 	        else:
-	        	bUpper = SMA + (priceSeries[:19].std()*3.0) # Upper Bollinger Band - more lenient, safer cover
+	        	bUpper = SMA + (priceSeries[:19].std()*1.5) # Upper Bollinger Band - more lenient, safer cover
 	        	bLower = SMA - (priceSeries[:19].std()*3.0) # Low Bollinger Band
 	        #######!!!!!!possibly have a second band outside first..for too strong movement!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -48,7 +48,7 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 	        # Open long position / Cover short position
 	        if lastTradeSell == True and mHist.iloc[-1] > 0 and trader.get_close_price(ticker, True, 1) > bUpper: # ticker, Buy, Size
 	            
-	            for i in range(1,4): # seems too slow..
+	            for i in range(1,20): # should scale based on order book amount in competition..
 	            	openLong = shift.Order(shift.Order.Type.MARKET_BUY, ticker, 1)
 	            	trader.submit_order(openLong)
 	            
@@ -58,7 +58,7 @@ def technicalStrat(trader: shift.Trader, ticker, lastTradeSell, dayEnd, lag=1):
 	        # Close long positions for now / Open short position
 	        elif lastTradeSell == False and mHist.iloc[-1] < 0 and trader.get_close_price(ticker, False, 1) < bLower: # ticker, Sell, Size
 	            
-	            for i in range(1,4): # seems too slow..
+	            for i in range(1,20): # should scale based on order book amount in competition..
 	            	closeLong = shift.Order(shift.Order.Type.MARKET_SELL, ticker, 1)
 	            	trader.submit_order(closeLong)
 	            
