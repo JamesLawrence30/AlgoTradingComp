@@ -55,90 +55,116 @@ def main(argv):
     # Begin trading
     print("Initial buying power:",trader.get_portfolio_summary().get_total_bp())
 
+    # View destination exchange(s) for each ticker
+    seeExchange(trader, "CS1")
+    seeExchange(trader, "CS2")
     
     # Stop loss / take profit
     manageInvCS1 = threading.Thread(target=manageInventory, args=[trader, 'CS1', dayEnd], name='manageInvCS1')
     manageInvCS2 = threading.Thread(target=manageInventory, args=[trader, 'CS2', dayEnd], name='manageInvCS2')
 
     # ---TECHNICAL ANALYSIS STRATEGY--- threads
+    """
     longTechCS1 = threading.Thread(target=technicalStrat, args=[trader, "CS1", True, dayEnd, 1.0], name='longTechCS1')
     shortTechCS1 = threading.Thread(target=technicalStrat, args=[trader, "CS1", False, dayEnd, 1.0], name='shortTechCS1')
 
     longTechCS2 = threading.Thread(target=technicalStrat, args=[trader, "CS2", True, dayEnd, 1.0], name='longTechCS2')
     shortTechCS2 = threading.Thread(target=technicalStrat, args=[trader, "CS2", False, dayEnd, 1.0], name='shortTechCS2')
+    """
 
-    seeExchange(trader, "CS1")
-    seeExchange(trader, "CS2")
     
     # ---MARKET MAKER STRATEGY--- threads
     #******allocation should now be max risk******#
-    """
-    longBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA1')
-    longBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA2')
-    longBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA3')
-    longBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longBA4')
+    longCS1_1 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_1')
+    longCS1_2 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_2')
+    longCS1_3 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_3')
+    longCS1_4 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_4')
 
-    shortBA1 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA1')
-    shortBA2 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA2')
-    shortBA3 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA3')
-    shortBA4 = threading.Thread(target=marketMaker, args=[trader, 'BA', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortBA4')
-    """
+    longCS2_1 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_1')
+    longCS2_2 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_2')
+    longCS2_3 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_3')
+    longCS2_4 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_4')
+
+
+    shortCS1_1 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_1')
+    shortCS1_2 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_2')
+    shortCS1_3 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_3')
+    shortCS1_4 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_4')
+
+    shortCS2_1 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_1')
+    shortCS2_2 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_2')
+    shortCS2_3 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_3')
+    shortCS2_4 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_4')
+
 
     # --Initiate threads--
     manageInvCS1.start()
     manageInvCS2.start()
 
-
+    """
     longTechCS1.start()
     shortTechCS1.start()
 
     longTechCS2.start()
     shortTechCS2.start()
-
-
     """
-    longBA1.start()
-    shortBA1.start()
+
+    longCS1_1.start()
+    shortCS1_1.start()
+    longCS2_1.start()
+    shortCS2_1.start()
     time.sleep(5)
 
-    longBA2.start()
-    shortBA2.start()
+    longCS1_2.start()
+    shortCS1_2.start()
+    longCS2_2.start()
+    shortCS2_2.start()
     time.sleep(5)
 
-    longBA3.start()
-    shortBA3.start()
+    longCS1_3.start()
+    shortCS1_3.start()
+    longCS2_3.start()
+    shortCS2_3.start()
     time.sleep(5)
 
-    longBA4.start()
-    shortBA4.start()
+    longCS1_4.start()
+    shortCS1_4.start()
+    longCS2_4.start()
+    shortCS2_4.start()
     time.sleep(5)
-    """
+
 
     # --Execute functions on threads-- 
     manageInvCS1.join()
     manageInvCS2.join()
 
-
+    """
     longTechCS1.join()
     shortTechCS1.join()
 
     longTechCS2.join()
     shortTechCS2.join()
-
-
     """
-    longBA1.join()
-    shortBA1.join()
 
-    longBA2.join()
-    shortBA2.join()
+    longCS1_1.join()
+    shortCS1_1.join()
+    longCS2_1.join()
+    shortCS2_1.join()
 
-    longBA3.join()
-    shortBA3.join()
+    longCS1_2.join()
+    shortCS1_2.join()
+    longCS2_2.join()
+    shortCS2_2.join()
 
-    longBA4.join()
-    shortBA4.join()
-    """
+    longCS1_3.join()
+    shortCS1_3.join()
+    longCS2_3.join()
+    shortCS2_3.join()
+
+    longCS1_4.join()
+    shortCS1_4.join()
+    longCS2_4.join()
+    shortCS2_4.join()
 
 
     # Disconnect

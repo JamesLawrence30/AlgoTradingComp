@@ -27,8 +27,8 @@ def manageInventory(trader: shift.Trader, ticker, dayEnd):
                 unrealizedPL = -((trader.get_close_price(ticker, True, -numShares) - tradedPrice)/tradedPrice)*100
 
             print(ticker, "Unrealized P/L:", unrealizedPL,"%")
-            #if unrealizedPL >= 0.40: # Target met, take profit
-            if unrealizedPL >= 3.0: # Target met, take profit
+            if unrealizedPL >= 0.40: # Target met, take profit
+                #if unrealizedPL >= 3.0: # Target met, take profit
                 if item.get_shares() > 0:
                     closePositions(trader, ticker)
                     """
@@ -46,8 +46,8 @@ def manageInventory(trader: shift.Trader, ticker, dayEnd):
                     print(ticker, "take profit on short")
                     time.sleep(5) # Don't act on volatile spikes and dips, only identify longer trends
 
-            #elif unrealizedPL <= -0.30: # Stop loss met, sell risk
-            elif unrealizedPL <= -0.50: # Stop loss met, sell risk
+            elif unrealizedPL <= -0.30: # Stop loss met, sell risk
+                #elif unrealizedPL <= -0.50: # Stop loss met, sell risk
                 if item.get_shares() > 0:
                     closePositions(trader, ticker)
                     """
