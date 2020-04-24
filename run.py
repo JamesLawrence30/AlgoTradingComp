@@ -43,7 +43,9 @@ def main(argv):
     dayStart = dt.datetime.combine(today,startTime)
 
     #Begin collecting prices
+    """
     trader.request_sample_prices(["CS1", "CS2"], 5.0, 26) # Ticker list, sample freq, sample window size !!!!!!!!!!!
+    """
 
     # Wait for 30 minutes
     trafficLight(trader, dayStart, 2.0)
@@ -74,27 +76,27 @@ def main(argv):
 
     
     # ---MARKET MAKER STRATEGY--- threads
-    #******allocation should now be max risk******#
-    longCS1_1 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_1')
-    longCS1_2 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_2')
-    longCS1_3 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_3')
-    longCS1_4 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_4')
+    #******allocation should now be max % at risk******#
+    longCS1_1 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_1')
+    longCS1_2 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_2')
+    longCS1_3 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_3')
+    longCS1_4 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS1_4')
 
-    longCS2_1 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_1')
-    longCS2_2 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_2')
-    longCS2_3 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_3')
-    longCS2_4 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_4')
+    longCS2_1 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_1')
+    longCS2_2 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_2')
+    longCS2_3 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_3')
+    longCS2_4 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_BUY, 3, 30, 0.08], name='longCS2_4')
 
 
-    shortCS1_1 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_1')
-    shortCS1_2 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_2')
-    shortCS1_3 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_3')
-    shortCS1_4 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_4')
+    shortCS1_1 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_1')
+    shortCS1_2 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_2')
+    shortCS1_3 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_3')
+    shortCS1_4 = threading.Thread(target=marketMaker, args=[trader, 'CS1', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS1_4')
 
-    shortCS2_1 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_1')
-    shortCS2_2 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_2')
-    shortCS2_3 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_3')
-    shortCS2_4 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .25, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_4')
+    shortCS2_1 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_1')
+    shortCS2_2 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_2')
+    shortCS2_3 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_3')
+    shortCS2_4 = threading.Thread(target=marketMaker, args=[trader, 'CS2', dayEnd, .15, shift.Order.Type.LIMIT_SELL, 3, 30, 0.08], name='shortCS2_4')
 
 
     # --Initiate threads--

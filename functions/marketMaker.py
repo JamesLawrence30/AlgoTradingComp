@@ -20,7 +20,7 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, orderType, lag
 
     fillTime = fillTime*10
     # While the time is before end of day...
-    while(dayEnd > rightNow):
+    while dayEnd > rightNow:# and trader.get_portfolio_summary().get_total_realized_pl() < 30000: # Take profit before end of day
         time.sleep(lag) # Give prices some time to change
         """
         Make Trades Here:
@@ -40,6 +40,8 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, orderType, lag
         bid = trader.get_best_price(ticker).get_bid_price()
         ask = trader.get_best_price(ticker).get_ask_price()
         spreadWiden = max(.01, (ask-bid)*.25)
+        if (ask-bid) < .05: # If spread is too tight, widen it
+        	spreadWiden = -spreadWiden
 
         if orderType == shift.Order.Type.LIMIT_BUY:
         	size = max(1,round(trader.get_best_price(ticker).get_ask_size() / 5)) # Only buy as much as you can sell. Divide by 5 so buying power lasts on high volume. At least 1
