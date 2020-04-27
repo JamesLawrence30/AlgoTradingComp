@@ -20,7 +20,7 @@ def marketMaker(trader: shift.Trader, ticker, dayEnd, allocation, orderType, lag
 
     fillTime = fillTime*10
     # While the time is before end of day...
-    while dayEnd > rightNow:# and trader.get_portfolio_summary().get_total_realized_pl() < 30000: # Take profit before end of day
+    while dayEnd > rightNow:
         time.sleep(lag) # Give prices some time to change
         """
         Make Trades Here:
